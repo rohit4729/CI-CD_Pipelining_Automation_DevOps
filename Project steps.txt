@@ -1,0 +1,180 @@
+Create IAM roles
+Create EKS cluster
+Add Node Group (Worker Nodes)
+Access cluster via kubectl
+Deploy test app (optional)
+
+
+STEP 1: Create IAM Roles
+
+(a) EKS Cluster Role
+  • Go to IAM > Roles > Create Role
+  • Select EKS - Cluster as use case
+  • Attach: AmazonEKSClusterPolicy
+  • Name it: eks-cluster-role
+
+(b) EKS Node Group Role
+  • Go to IAM > Roles > Create Role
+  • Select EC2 - EC2
+
+  • Attach:
+    o AmazonEKSWorkerNodePolicy
+    o AmazonEC2ContainerRegistryReadOnly
+    o AmazonEKS_CNI_Policy
+
+  • Name it: eks-node-role
+
+STEP 2: Create the EKS Cluster (via Console)
+     
+
+   1. Go to EKS → Clusters → Create Cluster
+   2. Fill:
+       o Cluster Name: my-eks-cluster
+       o Kubernetes Version: latest  
+       o Cluster Role: eks-cluster-role
+   3. Networking:
+       
+       o Select at least 2 subnets
+       o Endpoint Access: Public or Public + Private
+   4. Click Create
+
+
+   Takes ~10–15 minutes to finish
+
+
+   STEP 3: Add Node Group (Worker Nodes)
+      1. After the cluster is ready → Go to Compute → Add Node       Group
+      2. Fill:
+           o Node Group Name: nodegroup-1
+           o IAM Role: eks-node-role
+           o Instance Type: t3.medium (or t3.small for test)
+           o Desired Nodes: 2
+      3. Select Subnets
+      
+      4. Click Create
+ 
+      Takes ~10 minutes
+
+  step4: Create a EC2
+  name: CI_CD
+  image: amazon Linux
+  allow: all traffic(jenkins-8080 port)
+  instance: t3.medium
+  storage: 25
+Connect:
+1.  sudo dnf install java-17-amazon-corretto -y
+2. sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+3.sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+4. sudo yum install jenkins -y
+5. sudo systemctl start jenkins
+6. sudo systemctl enable Jenkins
+# go access your ec2 by <public-ip>:8080
+7.  sudo cat /var/lib/jenkins/secrets/initialAdminPassword 
+#  pest the key -> install suggested plugins
+8. sudo yum install git -y
+9. sudo yum install docker-y
+10. sudo systemctl start docker
+ 11. sudo systemctl enable docker  
+12. sudo usermod -aG docker ec2-user
+13. curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+14.chmod +x ./kubectl
+
+15.sudo mv ./kubectl /usr/local/bin/kubectl
+16. kubectl version --client
+
+# create access key
+17. aws configure
+18. ls -a
+19. ls -a .aws
+# add port no. 443 in eks cluster
+
+20. aws eks --region ap-south-1 update-kubeconfig --name cluster1
+21. kubectl get nodes
+22.  ls -a 
+23.  cat .kube/config
+24.  sudo mkdir -p /var/lib/jenkins/.kube
+25. sudo cp .kube/config /var/lib/jenkins/.kube/
+26. ls -al /var/lib/jenkins/
+27. sudo chown -R jenkins:jenkins /var/lib/jenkins/.kube/
+28. sudo cp -R /home/ec2-user/.kube/config /var/lib/jenkins/.kube/config
+sudo chown -R jenkins:jenkins /var/lib/jenkins/.kube
+29. sudo usermod -aG docker jenkins
+ sudo systemctl restart jenkins
+
+30. sudo tail /etc/group
+
+# go to Jenkins
+#install Docker pipeline and kubectl cli plugins
+# now go to manage/credintials/global --> ID rohit, pass- rohit28 11 03
+
+31. git clone https://github.com/vipin-ethans/999-proj1.git
+32. cd 999-proj1/k8/
+33. kubectl apply -f db.yaml
+34. kubectl apply -f be.yaml
+35. kubectl apply -f fe.yaml
+36. pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_CREDENTIALS = 'rohit4729'
+        DOCKER_IMAGE = 'rohit4729/proj3-web:v1'
+        KUBERNETES_DEPLOYMENT = 'frontend'
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/vipin-ethans/fe1.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Generate a dynamic tag based on build number or timestamp
+                    env.TAG = "${env.BUILD_NUMBER}" // Or use: sh('date +%Y%m%d%H%M%S').trim()
+                    
+                    // Build the Docker image with the dynamic tag
+                    sh "docker build -t $DOCKER_IMAGE:$TAG ."
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Push the Docker image with the dynamic tag
+                    withDockerRegistry([credentialsId: 'rohit4729', url: 'https://index.docker.io/v1/']) {                                                                                                                                                                                                          sh "docker push $DOCKER_IMAGE:$TAG"
+                    }
+                }
+            }
+        }
+
+        stage('Rolling Update Kubernetes Deployment') {
+            steps {
+                script {
+                    // Update the Kubernetes deployment with the new image
+                    sh "kubectl set image deployment/$KUBERNETES_DEPLOYMENT frontend=$DOCKER_IMAGE:$TAG"
+                }
+            }
+        }
+    }
+}
+
+37. create webhook 
+38. copy the GitHub repo url and pest in Jenkins 
+39. change your code and you will see the automatic build 
+40. now you can see that in your docker hub there is new image is pushed automatically
+
+
+
+
+
+
+
+
+
+
+
