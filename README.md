@@ -170,3 +170,19 @@ IAM roles, DockerHub credentials, and Jenkins permissions provide a secure CI/CD
 The pipeline script can easily be adapted for multiple microservices or projects.
 
 ---
+
+### 🖼️ Screenshots:
+
+<img width="1920" height="1080" alt="1" src="https://github.com/user-attachments/assets/0e0be2f3-29dc-4a7a-aab1-2821b71b8020" />
+<img width="1920" height="1080" alt="2" src="https://github.com/user-attachments/assets/c0caf8eb-055c-474f-816c-eef26e848dff" />
+<img width="1920" height="1080" alt="3" src="https://github.com/user-attachments/assets/fd803d24-be19-4046-8580-db7953e337e6" />
+<img width="1920" height="1080" alt="4" src="https://github.com/user-attachments/assets/e04c4b23-c20f-47fb-8d6e-01c58f0f8ad4" />
+<img width="1920" height="1080" alt="5" src="https://github.com/user-attachments/assets/0f687915-51a3-4320-a0a3-23e345c9d91f" />
+<img width="1920" height="1080" alt="6" src="https://github.com/user-attachments/assets/74a24580-d586-4c5e-8b31-0c45b1dbb2fb" />
+<img width="1920" height="1080" alt="7" src="https://github.com/user-attachments/assets/13f88daf-fd96-4354-84b3-349233089f04" />
+<img width="1920" height="1080" alt="8" src="https://github.com/user-attachments/assets/8f8a9b46-af4a-40b5-89ac-35e8f0685e8b" />
+<img width="1920" height="1080" alt="9" src="https://github.com/user-attachments/assets/842b8282-30b3-47b5-b14c-ca4f7eae7645" />
+<img width="1920" height="1080" alt="10" src="https://github.com/user-attachments/assets/7d21bdf1-b5d6-41ea-a047-a15f56fcc72e" />
+
+
+
